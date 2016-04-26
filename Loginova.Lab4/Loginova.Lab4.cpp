@@ -2,22 +2,24 @@
 
 using namespace std;
 
-bool IsDataValid(double, int, int, int);
-double** AllocMemory(int);
-int TheNumberOfPartitions(int, int, int, double);
+#include <iostream>
+
+using namespace std;
+
+bool IsDataValid(double, double, double, unsigned);
+int TheNumberOfPartitions(double, double, unsigned, double);
 double Formula(double);
-double MediumRectangle(double, double, int);
-double RightRectangle(double, double, int);
-void DisplayMatrix(double**, int);
-void FreeHeap(double**, int);
+double MediumRectangle(double, double, unsigned);
+double RightRectangle(double, double, unsigned);
+
 
 
 int main()
 {
 	while (true)
 	{
-		double eps;
-		int a, b, n;
+		double eps, a, b;
+		unsigned n;
 
 		while (true)
 		{
@@ -34,10 +36,9 @@ int main()
 			cout << "Invalid Data" << endl;
 			system("cls");
 		}
-
+	
 		n = TheNumberOfPartitions(a, b, n, eps);
-		cout << n;
-
+		
 		cout << endl << "According to the formula of right triangles the integral is = ";
 		cout << RightRectangle(a, b, n);
 		cout << endl << "According to the formula of medium triangles the integral is = ";
@@ -57,19 +58,19 @@ int main()
 	return 0;
 }
 
-int TheNumberOfPartitions(int a, int b, int n, double eps)
+int TheNumberOfPartitions(double a, double b, unsigned n, double eps)
 {
-double PrevInt = 0, NextInt = 1;
-while (fabs(PrevInt - NextInt) > eps)
-{
-	PrevInt = RightRectangle(a, b, n);
-	NextInt = RightRectangle(a, b, 2 * n);
-	n = 2 * n;
-}
-return n;
+	double PrevInt = 0, NextInt = 1;
+	while (fabs(PrevInt - NextInt) > eps)
+	{
+		PrevInt = Formula(n);
+		NextInt = Formula (2 * n);
+		n = 2 * n;
+	}
+	return n;
 }
 
-bool IsDataValid(double eps, int a, int b, int n)
+bool IsDataValid(double eps, double a, double b, unsigned n)
 {
 	if (eps < 0 || eps >= 1) return false;
 	if (a > b) return false;
@@ -77,12 +78,12 @@ bool IsDataValid(double eps, int a, int b, int n)
 	return true;
 }
 
-double RightRectangle(double a, double b, int n)
+double RightRectangle(double a, double b, unsigned n)
 {
 	double step = (b - a) / n;
 	double integral = 0;
-	double t = a + step;
-	while (t < b)
+	double t = a;
+	while (t <= b)
 	{
 		integral += Formula(t);
 		t = t + step;
@@ -91,22 +92,21 @@ double RightRectangle(double a, double b, int n)
 	return integral;
 }
 
-double Formula (double x)
+double Formula(double x)
 {
-	return 1/(sqrt(x*x*x*x));
+	return 1 / (sqrt (x));
 }
 
-double MediumRectangle(double LowerLimit, double UpperLimit, int k)
+double MediumRectangle(double a, double b, unsigned n)
 {
-	double Step = (UpperLimit - LowerLimit) / k;
-	double Integral = 0;
-	double t = LowerLimit;
-	while (t < UpperLimit)
+	double step = (b - a) / n;
+	double integral = 0;
+	double t = a;
+	while (t < b)
 	{
-		Integral += Formula(t);
-		t = t + (3/2)*Step;
+		integral += Formula(t);
+		t += (1.5)*step;
 	}
-	Integral = Step * Integral;
-	return Integral;
+	integral = step * integral;
+	return integral;
 }
-
