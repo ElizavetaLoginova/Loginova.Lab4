@@ -2,17 +2,11 @@
 
 using namespace std;
 
-#include <iostream>
-
-using namespace std;
-
 bool IsDataValid(double, double, double, unsigned);
 int TheNumberOfPartitions(double, double, unsigned, double);
 double Formula(double);
 double MediumRectangle(double, double, unsigned);
 double RightRectangle(double, double, unsigned);
-
-
 
 int main()
 {
@@ -46,8 +40,7 @@ int main()
 
 		system("pause");
 		system("cls");
-
-
+		
 		char yes;
 		cout << "Would you like to countinie? Press y/Y: " << endl;
 		cin >> yes;
