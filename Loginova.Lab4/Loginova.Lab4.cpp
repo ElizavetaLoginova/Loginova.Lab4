@@ -2,11 +2,12 @@
 
 using namespace std;
 
-bool IsDataValid(double, double, double, unsigned);
-int TheNumberOfPartitions(double, double, unsigned, double);
-double Formula(double);
-double MediumRectangle(double, double, unsigned);
-double RightRectangle(double, double, unsigned);
+typedef double(*Formula) (double, double, int);
+bool IsDataValid(double, double, double, int);
+double TheNumberOfPartitions(int, double, double, double, Formula);
+double MediumRectangle(double, double, int);
+double RightRectangle(double, double, int);
+
 
 int main()
 {
@@ -31,16 +32,17 @@ int main()
 			system("cls");
 		}
 	
-		n = TheNumberOfPartitions(a, b, n, eps);
-		
+		Formula Fun = RightRectangle;
 		cout << endl << "According to the formula of right triangles the integral is = ";
-		cout << RightRectangle(a, b, n);
+		cout << TheNumberOfPartitions(n, a, b, eps, Fun);
+		Fun = MediumRectangle;
 		cout << endl << "According to the formula of medium triangles the integral is = ";
-		cout << MediumRectangle(a, b, n);
+		cout << TheNumberOfPartitions(n, a, b, eps, Fun);
 
 		system("pause");
 		system("cls");
-		
+
+
 		char yes;
 		cout << "Would you like to countinie? Press y/Y: " << endl;
 		cin >> yes;
@@ -51,19 +53,19 @@ int main()
 	return 0;
 }
 
-int TheNumberOfPartitions(double a, double b, unsigned n, double eps)
+double TheNumberOfPartitions(int n, double a, double b, double eps, Formula Fun)
 {
-	double PrevInt = 0, NextInt = 1;
-	while (fabs(PrevInt - NextInt) > eps)
+	double prevInt = 0, nextInt = 1;
+	while (fabs(prevInt - nextInt) > eps)
 	{
-		PrevInt = Formula(n);
-		NextInt = Formula (2 * n);
+		prevInt = Fun(a, b, n);
+		nextInt = Fun(a, b, 2 * n);
 		n = 2 * n;
 	}
-	return n;
+	return prevInt;
 }
 
-bool IsDataValid(double eps, double a, double b, unsigned n)
+bool IsDataValid(double eps, double a, double b, int n)
 {
 	if (eps < 0 || eps >= 1) return false;
 	if (a > b) return false;
@@ -71,34 +73,30 @@ bool IsDataValid(double eps, double a, double b, unsigned n)
 	return true;
 }
 
-double RightRectangle(double a, double b, unsigned n)
+double RightRectangle(double a, double b, int n)
 {
 	double step = (b - a) / n;
 	double integral = 0;
-	double t = a;
-	while (t <= b)
+	double t = a + step;
+	while (t <= b + step)
 	{
-		integral += Formula(t);
+		integral += (1/t/t);
 		t = t + step;
 	}
 	integral = step * integral;
 	return integral;
 }
 
-double Formula(double x)
-{
-	return 1 / (sqrt (x));
-}
 
-double MediumRectangle(double a, double b, unsigned n)
+double MediumRectangle(double a, double b, int n)
 {
 	double step = (b - a) / n;
 	double integral = 0;
-	double t = a;
+	double t = step/2+a;
 	while (t < b)
 	{
-		integral += Formula(t);
-		t += (1.5)*step;
+		integral += (1/t/t);
+		t += step;
 	}
 	integral = step * integral;
 	return integral;
